@@ -218,131 +218,132 @@
     ];
 
     // Current track index
-   var currentTrack = 0;
+    var currentTrack = 0;
 
-// Get elements
-var audio = document.getElementById('myAudio');
-var trackNameDisplay = document.getElementById('trackName');
-var playPauseButton = document.getElementById('playPauseButton');
-var prevButton = document.getElementById('prevButton');
-var nextButton = document.getElementById('nextButton');
-var playModeSelect = document.getElementById('playMode');
-var volumeSlider = document.getElementById('volume');
-var playlistContainer = document.getElementById('playlist').querySelector('ul');
-var timeDisplay = document.getElementById('timeDisplay');
-var currentTimeDisplay = document.getElementById('currentTime');
-var durationDisplay = document.getElementById('duration');
+    // Get elements
+    var audio = document.getElementById('myAudio');
+    var trackNameDisplay = document.getElementById('trackName');
+    var playPauseButton = document.getElementById('playPauseButton');
+    var prevButton = document.getElementById('prevButton');
+    var nextButton = document.getElementById('nextButton');
+    var playModeSelect = document.getElementById('playMode');
+    var volumeSlider = document.getElementById('volume');
+    var playlistContainer = document.getElementById('playlist').querySelector('ul');
+    var timeDisplay = document.getElementById('timeDisplay');
+    var currentTimeDisplay = document.getElementById('currentTime');
+    var durationDisplay = document.getElementById('duration');
 
-// Default playback mode
-var playMode = 'sequential';
+    // Default playback mode
+    var playMode = 'sequential';
 
-// Set default track and display
-audio.src = playlist[currentTrack];
-trackNameDisplay.textContent = getTrackName(playlist[currentTrack]);
+    // Helper function to extract file name from path
+    function getFileName(filePath) {
+      return filePath.split('/').pop();
+    }
 
-// Populate the playlist
-playlist.forEach(function(track, index) {
-  var listItem = document.createElement('li');
-  listItem.textContent = getTrackName(track);  // Display only the track name without 'D/'
-  listItem.addEventListener('click', function() {
-    currentTrack = index;
+    // Set default track and display
     audio.src = playlist[currentTrack];
-    trackNameDisplay.textContent = getTrackName(playlist[currentTrack]);  // Update track name
-    audio.play();
-    playPauseButton.textContent = 'Pause';
-  });
-  playlistContainer.appendChild(listItem);
-});
+    trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
 
-// Function to get a random track index (excluding the current one)
-function getRandomTrack() {
-  var randomIndex;
-  do {
-    randomIndex = Math.floor(Math.random() * playlist.length);
-  } while (randomIndex === currentTrack); // Ensure it's not the same track
-  return randomIndex;
-}
+    // Populate the playlist
+    playlist.forEach(function(track, index) {
+      var listItem = document.createElement('li');
+      listItem.textContent = getFileName(track);  // Only show file name
+      listItem.addEventListener('click', function() {
+        currentTrack = index;
+        audio.src = playlist[currentTrack];
+        trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+        audio.play();
+        playPauseButton.textContent = 'Pause';
+      });
+      playlistContainer.appendChild(listItem);
+    });
 
-// Play/Pause functionality
-playPauseButton.addEventListener('click', function() {
-  if (audio.paused) {
-    audio.play();
-    playPauseButton.textContent = 'Pause';
-  } else {
-    audio.pause();
-    playPauseButton.textContent = 'Play';
-  }
-});
+    // Function to get a random track index (excluding the current one)
+    function getRandomTrack() {
+      var randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * playlist.length);
+      } while (randomIndex === currentTrack); // Ensure it's not the same track
+      return randomIndex;
+    }
 
-// Next track functionality
-nextButton.addEventListener('click', function() {
-  if (playMode === 'random') {
-    currentTrack = getRandomTrack();
-  } else if (playMode === 'sequential') {
-    currentTrack = (currentTrack + 1) % playlist.length;
-  }
-  audio.src = playlist[currentTrack];
-  trackNameDisplay.textContent = getTrackName(playlist[currentTrack]);  // Update track name
-  audio.play();
-  playPauseButton.textContent = 'Pause';
-});
+    // Play/Pause functionality
+    playPauseButton.addEventListener('click', function() {
+      if (audio.paused) {
+        audio.play();
+        playPauseButton.textContent = 'Pause';
+      } else {
+        audio.pause();
+        playPauseButton.textContent = 'Play';
+      }
+    });
 
-// Previous track functionality
-prevButton.addEventListener('click', function() {
-  if (playMode === 'random') {
-    currentTrack = getRandomTrack();
-  } else if (playMode === 'sequential') {
-    currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
-  }
-  audio.src = playlist[currentTrack];
-  trackNameDisplay.textContent = getTrackName(playlist[currentTrack]);  // Update track name
-  audio.play();
-  playPauseButton.textContent = 'Pause';
-});
+    // Next track functionality
+    nextButton.addEventListener('click', function() {
+      if (playMode === 'random') {
+        currentTrack = getRandomTrack();
+      } else if (playMode === 'sequential') {
+        currentTrack = (currentTrack + 1) % playlist.length;
+      }
+      audio.src = playlist[currentTrack];
+      trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+      audio.play();
+      playPauseButton.textContent = 'Pause';
+    });
 
-// When the audio ends, handle different modes
-audio.addEventListener('ended', function() {
-  if (playMode === 'random') {
-    currentTrack = getRandomTrack();
-  } else if (playMode === 'sequential') {
-    currentTrack = (currentTrack + 1) % playlist.length;
-  } else if (playMode === 'loop') {
-    currentTrack = currentTrack;  // Same track
-  }
-  audio.src = playlist[currentTrack];
-  trackNameDisplay.textContent = getTrackName(playlist[currentTrack]);  // Update track name
-  audio.play();
-  playPauseButton.textContent = 'Pause';
-});
+    // Previous track functionality
+    prevButton.addEventListener('click', function() {
+      if (playMode === 'random') {
+        currentTrack = getRandomTrack();
+      } else if (playMode === 'sequential') {
+        currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+      }
+      audio.src = playlist[currentTrack];
+      trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+      audio.play();
+      playPauseButton.textContent = 'Pause';
+    });
 
-// Update current time and duration
-audio.addEventListener('loadedmetadata', function() {
-  durationDisplay.textContent = formatTime(audio.duration);
-});
+    // Playback mode selection
+    playModeSelect.addEventListener('change', function() {
+      playMode = this.value;
+    });
 
-audio.addEventListener('timeupdate', function() {
-  currentTimeDisplay.textContent = formatTime(audio.currentTime);
-});
+    // Volume control
+    volumeSlider.addEventListener('input', function() {
+      audio.volume = this.value;
+    });
 
-function formatTime(seconds) {
-  var mins = Math.floor(seconds / 60);
-  var secs = Math.floor(seconds % 60);
-  return (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
-}
+    // Update the current time and duration display
+    audio.addEventListener('timeupdate', function() {
+      var currentMinutes = Math.floor(audio.currentTime / 60);
+      var currentSeconds = Math.floor(audio.currentTime % 60);
+      var durationMinutes = Math.floor(audio.duration / 60);
+      var durationSeconds = Math.floor(audio.duration % 60);
 
-// Adjust volume
-volumeSlider.addEventListener('input', function() {
-  audio.volume = volumeSlider.value;
-});
+      if (!isNaN(currentMinutes) && !isNaN(currentSeconds)) {
+        currentTimeDisplay.textContent = 
+          (currentMinutes < 10 ? '0' : '') + currentMinutes + ':' +
+          (currentSeconds < 10 ? '0' : '') + currentSeconds;
+      }
 
-// Update play mode when user changes selection
-playModeSelect.addEventListener('change', function() {
-  playMode = playModeSelect.value;
-});
+      if (!isNaN(durationMinutes) && !isNaN(durationSeconds)) {
+        durationDisplay.textContent = 
+          (durationMinutes < 10 ? '0' : '') + durationMinutes + ':' +
+          (durationSeconds < 10 ? '0' : '') + durationSeconds;
+      }
+    });
 
-// Set initial volume
-audio.volume = 0.3;
-
+    // Automatically move to the next track when the current one ends
+    audio.addEventListener('ended', function() {
+      if (playMode === 'loop') {
+        audio.currentTime = 0;
+        audio.play();
+      } else {
+        nextButton.click(); // Simulate the "Next" button click
+      }
+    });
   </script>
 
 </body>
