@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Player List</title>
+  <style>
+    /* Reset some default styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Page background */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #e0e7ff; /* Softer, light blue background */
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 30px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #5b78b0;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.1); /* Softer shadow for text */
+    }
+
+    /* Audio player container */
+    #audioContainer {
+      background-color: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 450px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #audioContainer:hover {
+      transform: translateY(-5px); /* Subtle lift effect */
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Audio player */
+    #myAudio {
+      width: 100%;
+      border-radius: 12px;
+      outline: none;
+    }
+
+    /* Track name display */
+    #trackName {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #444;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Controls container */
+    #playerControls {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* Buttons style */
+    button, select {
+      padding: 12px 24px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #4a90e2;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+    }
+
+    button:hover, select:hover {
+      background-color: #357ab7;
+      transform: translateY(-3px);
+    }
+
+    button:focus, select:focus {
+      outline: none;
+      box-shadow: 0 0 5px 2px rgba(74, 144, 226, 0.5);
+    }
+
+    /* Playback mode selection */
+    select {
+      width: 180px;
+      background-color: #e1f1fc;
+      padding: 12px;
+      border-radius: 50px;
+    }
+
+    /* Volume control */
+    #volumeControl {
+      margin-top: 20px;
+    }
+
+    #volumeControl input {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    /* Playlist display */
+    #playlist {
+      margin-top: 30px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    #playlist ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    #playlist li {
+      padding: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      border-radius: 8px;
+    }
+
+    #playlist li:hover {
+      background-color: #e1f1fc;
+      transform: translateX(5px); /* Slight shift effect */
+    }
+
+    /* Playback Time Display */
+    #timeDisplay {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #777;
+    }
+
+    #timeDisplay span {
+      font-weight: bold;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      #audioContainer {
+        width: 90%;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Music Player</h1>
+
+  <!-- Audio player container -->
+  <div id="audioContainer">
+    <!-- Audio player with controls -->
+    <audio id="myAudio" controls></audio>
+    <p id="trackName"></p>  <!-- To display the current track name -->
+
+    <!-- Player controls (Previous, Play/Pause, Next) -->
+    <div id="playerControls">
+      <button id="prevButton">Previous</button>
+      <button id="playPauseButton">Play</button>
+      <button id="nextButton">Next</button>
+    </div>
+    <br> 
+    <!-- Playback Mode Selection -->
+    <div>
+      <label for="playMode" style="font-size: 16px;">选择播放方式: </label>
+      <select id="playMode">
+        <option value="sequential">顺序播放</option>
+        <option value="random">随机播放</option>
+        <option value="loop">循环播放</option>
+      </select>
+    </div>
+
+    <!-- Volume Control -->
+    <div id="volumeControl">
+      <label for="volume" style="font-size: 16px;">音量: </label>
+      <input type="range" id="volume" min="0" max="1" step="0.01" value="0.3" />
+    </div>
+
+    <!-- Playlist -->
+    <div id="playlist">
+      <ul>
+        <!-- Music list items will be populated dynamically -->
+      </ul>
+    </div>
+
+    <!-- Playback Time Display -->
+    <div id="timeDisplay">
+      <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
+    </div>
+  </div>
+
+  <script>
+    // Music files array
+    var playlist = [
+      'Tower of Flower (320 kbps).mp3',
+      'Arifureta Season 3 - Opening Full『Unending Wish』by Void_Chords feat. MindaRyn.mp3',
+      '(Lyrics-CC)「ホロウ」Shiyui 「魔王2099」Full Opening Song ⧸Demon Lord 2099.mp3',
+      'MUSIC/AnyConv.com__(音訊)[サクラノ刻] 樱之刻 OST [已更新正式版]-第16集-14 夏の夜の展覧会は.mp3'
+    ];
+
+    // Current track index
+    var currentTrack = 0;
+
+    // Get elements
+    var audio = document.getElementById('myAudio');
+    var trackNameDisplay = document.getElementById('trackName');
+    var playPauseButton = document.getElementById('playPauseButton');
+    var prevButton = document.getElementById('prevButton');
+    var nextButton = document.getElementById('nextButton');
+    var playModeSelect = document.getElementById('playMode');
+    var volumeSlider = document.getElementById('volume');
+    var playlistContainer = document.getElementById('playlist').querySelector('ul');
+    var timeDisplay = document.getElementById('timeDisplay');
+    var currentTimeDisplay = document.getElementById('currentTime');
+    var durationDisplay = document.getElementById('duration');
+
+    // Default playback mode
+    var playMode = 'sequential';
+
+    // Set default track and display
+    audio.src = playlist[currentTrack];
+    trackNameDisplay.textContent = playlist[currentTrack];
+
+    // Populate the playlist
+    playlist.forEach(function(track, index) {
+      var listItem = document.createElement('li');
+      listItem.textContent = track;
+      listItem.addEventListener('click', function() {
+        currentTrack = index;
+        audio.src = playlist[currentTrack];
+        trackNameDisplay.textContent = playlist[currentTrack];
+        audio.play();
+        playPauseButton.textContent = 'Pause';
+      });
+      playlistContainer.appendChild(listItem);
+    });
+
+    // Function to get a random track index (excluding the current one)
+    function getRandomTrack() {
+      var randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * playlist.length);
+      } while (randomIndex === currentTrack); // Ensure it's not the same track
+      return randomIndex;
+    }
+
+    // Play/Pause functionality
+    playPauseButton.addEventListener('click', function() {
+      if (audio.paused) {
+        audio.play();
+        playPauseButton.textContent = 'Pause';
+      } else {
+        audio.pause();
+        playPauseButton.textContent = 'Play';
+      }
+    });
+
+    // Next track functionality
+    nextButton.addEventListener('click', function() {
+      if (playMode === 'random') {
+        currentTrack = getRandomTrack();
+      } else if (playMode === 'sequential') {
+        currentTrack = (currentTrack + 1) % playlist.length;
+      }
+      audio.src = playlist[currentTrack];
+      trackNameDisplay.textContent = playlist[currentTrack];
+      audio.play();
+      playPauseButton.textContent = 'Pause';
+    });
+
+    // Previous track functionality
+    prevButton.addEventListener('click', function() {
+      if (playMode === 'random') {
+        currentTrack = getRandomTrack();
+      } else if (playMode === 'sequential') {
+        currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+      }
+      audio.src = playlist[currentTrack];
+      trackNameDisplay.textContent = playlist[currentTrack];
+      audio.play();
+      playPauseButton.textContent = 'Pause';
+    });
+
+    // When the audio ends, handle different modes
+    audio.addEventListener('ended', function() {
+      if (playMode === 'random') {
+        currentTrack = getRandomTrack();
+      } else if (playMode === 'sequential') {
+        currentTrack = (currentTrack + 1) % playlist.length;
+      } else if (playMode === 'loop') {
+        currentTrack = currentTrack;  // Same track
+      }
+      audio.src = playlist[currentTrack];
+      trackNameDisplay.textContent = playlist[currentTrack];
+      audio.play();
+      playPauseButton.textContent = 'Pause';
+    });
+
+    // Update current time and duration
+    audio.addEventListener('loadedmetadata', function() {
+      durationDisplay.textContent = formatTime(audio.duration);
+    });
+
+    audio.addEventListener('timeupdate', function() {
+      currentTimeDisplay.textContent = formatTime(audio.currentTime);
+    });
+
+    function formatTime(seconds) {
+      var mins = Math.floor(seconds / 60);
+      var secs = Math.floor(seconds % 60);
+      return (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+    }
+
+    // Adjust volume
+    volumeSlider.addEventListener('input', function() {
+      audio.volume = volumeSlider.value;
+    });
+
+    // Update play mode when user changes selection
+    playModeSelect.addEventListener('change', function() {
+      playMode = playModeSelect.value;
+    });
+
+    // Set initial volume
+    audio.volume = 0.3;
+
+  </script>
+
+</body>
+</html>
