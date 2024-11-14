@@ -5,129 +5,110 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Music Player List</title>
   <style>
-    /* Reset some default styling */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    /* Page background */
     body {
       font-family: 'Arial', sans-serif;
-      background-color: #e0e7ff; /* Softer, light blue background */
+      background-color: #e0e7ff;
       color: #333;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 30px;
+      padding: 20px;
     }
 
     h1 {
-      font-size: 36px;
-      margin-bottom: 20px;
+      font-size: 24px;
+      margin-bottom: 15px;
       color: #5b78b0;
-      text-shadow: 3px 3px 6px rgba(0,0,0,0.1); /* Softer shadow for text */
+      text-align: center;
     }
 
-    /* Audio player container */
     #audioContainer {
-      background-color: #ffffff;
-      border-radius: 20px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-      padding: 30px;
-      width: 450px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 100%;
+      max-width: 300px;
       text-align: center;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     #audioContainer:hover {
-      transform: translateY(-5px); /* Subtle lift effect */
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
     }
 
-    /* Audio player */
     #myAudio {
       width: 100%;
-      border-radius: 12px;
-      outline: none;
+      border-radius: 8px;
     }
 
-    /* Track name display */
     #trackName {
-      margin-top: 15px;
-      font-size: 18px;
+      margin-top: 10px;
+      font-size: 14px;
       color: #444;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* Controls container */
     #playerControls {
-      margin-top: 20px;
+      margin-top: 15px;
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 10px;
     }
 
-    /* Buttons style */
     button, select {
-      padding: 12px 24px;
-      font-size: 16px;
+      padding: 8px 16px;
+      font-size: 14px;
       color: #fff;
       background-color: #4a90e2;
       border: none;
-      border-radius: 50px;
+      border-radius: 20px;
       cursor: pointer;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease-in-out;
+      transition: background-color 0.3s ease;
     }
 
     button:hover, select:hover {
       background-color: #357ab7;
-      transform: translateY(-3px);
     }
 
-    button:focus, select:focus {
-      outline: none;
-      box-shadow: 0 0 5px 2px rgba(74, 144, 226, 0.5);
-    }
-
-    /* Playback mode selection */
     select {
-      width: 180px;
+      width: 120px;
       background-color: #e1f1fc;
-      padding: 12px;
-      border-radius: 50px;
     }
 
-    /* Volume control */
     #volumeControl {
-      margin-top: 20px;
+      margin-top: 15px;
     }
 
     #volumeControl input {
       width: 100%;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
-    /* Playlist display */
     #playlist {
-      margin-top: 30px;
-      max-height: 200px;
+      margin-top: 15px;
+      max-height: 150px;
       overflow-y: auto;
+      display: none;
     }
 
     #playlist ul {
       list-style: none;
-      padding: 0;
     }
 
     #playlist li {
-      padding: 12px;
+      padding: 8px;
       cursor: pointer;
       transition: background-color 0.3s ease;
       border-radius: 8px;
@@ -135,80 +116,70 @@
 
     #playlist li:hover {
       background-color: #e1f1fc;
-      transform: translateX(5px); /* Slight shift effect */
     }
 
-    /* Playback Time Display */
     #timeDisplay {
-      margin-top: 20px;
-      font-size: 16px;
+      margin-top: 15px;
+      font-size: 14px;
       color: #777;
     }
 
-    #timeDisplay span {
-      font-weight: bold;
-    }
-
-    /* Responsive adjustments */
     @media (max-width: 600px) {
       #audioContainer {
-        width: 90%;
+        padding: 15px;
       }
 
       h1 {
-        font-size: 28px;
+        font-size: 20px;
+      }
+
+      #playerControls button {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      #volumeControl input {
+        margin-top: 5px;
+      }
+
+      #playlist {
+        display: block;
       }
     }
   </style>
 </head>
 <body>
-
   <h1>Music Player</h1>
-
-  <!-- Audio player container -->
   <div id="audioContainer">
-    <!-- Audio player with controls -->
     <audio id="myAudio" controls></audio>
-    <p id="trackName"></p>  <!-- To display the current track name -->
-
-    <!-- Player controls (Previous, Play/Pause, Next) -->
+    <p id="trackName"></p>
     <div id="playerControls">
       <button id="prevButton">Previous</button>
       <button id="playPauseButton">Play</button>
       <button id="nextButton">Next</button>
     </div>
-    <br> 
-    <!-- Playback Mode Selection -->
+    <br>
     <div>
-      <label for="playMode" style="font-size: 16px;">选择播放方式: </label>
+      <label for="playMode">选择播放方式: </label>
       <select id="playMode">
         <option value="sequential">顺序播放</option>
         <option value="random">随机播放</option>
         <option value="loop">循环播放</option>
       </select>
     </div>
-
-    <!-- Volume Control -->
     <div id="volumeControl">
-      <label for="volume" style="font-size: 16px;">音量: </label>
+      <label for="volume">音量: </label>
       <input type="range" id="volume" min="0" max="1" step="0.01" value="0.3" />
     </div>
-
-    <!-- Playlist -->
     <div id="playlist">
-      <ul>
-        <!-- Music list items will be populated dynamically -->
-      </ul>
+      <ul></ul>
     </div>
-
-    <!-- Playback Time Display -->
     <div id="timeDisplay">
       <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
     </div>
   </div>
 
   <script>
-    // Music files array
     var playlist = [
       './D/Flower-Colored Youth.mp3',
       './D/The sunflower of the night.mp3',
@@ -217,10 +188,7 @@
       './D/Identit(Piano Solo).mp3'
     ];
 
-    // Current track index
     var currentTrack = 0;
-
-    // Get elements
     var audio = document.getElementById('myAudio');
     var trackNameDisplay = document.getElementById('trackName');
     var playPauseButton = document.getElementById('playPauseButton');
@@ -229,46 +197,59 @@
     var playModeSelect = document.getElementById('playMode');
     var volumeSlider = document.getElementById('volume');
     var playlistContainer = document.getElementById('playlist').querySelector('ul');
-    var timeDisplay = document.getElementById('timeDisplay');
     var currentTimeDisplay = document.getElementById('currentTime');
     var durationDisplay = document.getElementById('duration');
-
-    // Default playback mode
     var playMode = 'sequential';
 
-    // Helper function to extract file name from path
     function getFileName(filePath) {
       return filePath.split('/').pop();
     }
 
-    // Set default track and display
-    audio.src = playlist[currentTrack];
-    trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+    function updateTrackInfo() {
+      trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+    }
 
-    // Populate the playlist
+    function updateTimeDisplay() {
+      var currentMinutes = Math.floor(audio.currentTime / 60);
+      var currentSeconds = Math.floor(audio.currentTime % 60);
+      var durationMinutes = Math.floor(audio.duration / 60);
+      var durationSeconds = Math.floor(audio.duration % 60);
+
+      currentTimeDisplay.textContent = 
+        (currentMinutes < 10 ? '0' : '') + currentMinutes + ':' + 
+        (currentSeconds < 10 ? '0' : '') + currentSeconds;
+
+      if (!isNaN(durationMinutes) && !isNaN(durationSeconds)) {
+        durationDisplay.textContent = 
+          (durationMinutes < 10 ? '0' : '') + durationMinutes + ':' + 
+          (durationSeconds < 10 ? '0' : '') + durationSeconds;
+      }
+    }
+
+    audio.src = playlist[currentTrack];
+    updateTrackInfo();
+
     playlist.forEach(function(track, index) {
       var listItem = document.createElement('li');
-      listItem.textContent = getFileName(track);  // Only show file name
+      listItem.textContent = getFileName(track);
       listItem.addEventListener('click', function() {
         currentTrack = index;
         audio.src = playlist[currentTrack];
-        trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+        updateTrackInfo();
         audio.play();
         playPauseButton.textContent = 'Pause';
       });
       playlistContainer.appendChild(listItem);
     });
 
-    // Function to get a random track index (excluding the current one)
     function getRandomTrack() {
       var randomIndex;
       do {
         randomIndex = Math.floor(Math.random() * playlist.length);
-      } while (randomIndex === currentTrack); // Ensure it's not the same track
+      } while (randomIndex === currentTrack);
       return randomIndex;
     }
 
-    // Play/Pause functionality
     playPauseButton.addEventListener('click', function() {
       if (audio.paused) {
         audio.play();
@@ -279,7 +260,6 @@
       }
     });
 
-    // Next track functionality
     nextButton.addEventListener('click', function() {
       if (playMode === 'random') {
         currentTrack = getRandomTrack();
@@ -287,12 +267,11 @@
         currentTrack = (currentTrack + 1) % playlist.length;
       }
       audio.src = playlist[currentTrack];
-      trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+      updateTrackInfo();
       audio.play();
       playPauseButton.textContent = 'Pause';
     });
 
-    // Previous track functionality
     prevButton.addEventListener('click', function() {
       if (playMode === 'random') {
         currentTrack = getRandomTrack();
@@ -300,51 +279,39 @@
         currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
       }
       audio.src = playlist[currentTrack];
-      trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+      updateTrackInfo();
       audio.play();
       playPauseButton.textContent = 'Pause';
     });
 
-    // Playback mode selection
     playModeSelect.addEventListener('change', function() {
       playMode = this.value;
+      if (playMode === 'loop') {
+        audio.loop = true;
+      } else {
+        audio.loop = false;
+      }
     });
 
-    // Volume control
     volumeSlider.addEventListener('input', function() {
       audio.volume = this.value;
     });
 
-    // Update the current time and duration display
-    audio.addEventListener('timeupdate', function() {
-      var currentMinutes = Math.floor(audio.currentTime / 60);
-      var currentSeconds = Math.floor(audio.currentTime % 60);
-      var durationMinutes = Math.floor(audio.duration / 60);
-      var durationSeconds = Math.floor(audio.duration % 60);
+    audio.addEventListener('timeupdate', updateTimeDisplay);
 
-      if (!isNaN(currentMinutes) && !isNaN(currentSeconds)) {
-        currentTimeDisplay.textContent = 
-          (currentMinutes < 10 ? '0' : '') + currentMinutes + ':' +
-          (currentSeconds < 10 ? '0' : '') + currentSeconds;
-      }
-
-      if (!isNaN(durationMinutes) && !isNaN(durationSeconds)) {
-        durationDisplay.textContent = 
-          (durationMinutes < 10 ? '0' : '') + durationMinutes + ':' +
-          (durationSeconds < 10 ? '0' : '') + durationSeconds;
-      }
-    });
-
-    // Automatically move to the next track when the current one ends
     audio.addEventListener('ended', function() {
-      if (playMode === 'loop') {
-        audio.currentTime = 0;
+      if (playMode === 'sequential') {
+        nextButton.click();
+      } else if (playMode === 'random') {
+        currentTrack = getRandomTrack();
+        audio.src = playlist[currentTrack];
+        updateTrackInfo();
         audio.play();
-      } else {
-        nextButton.click(); // Simulate the "Next" button click
       }
     });
-  </script>
 
+    audio.addEventListener('loadedmetadata', updateTimeDisplay);
+
+  </script>
 </body>
 </html>
