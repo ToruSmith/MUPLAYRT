@@ -3,108 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Music Player List</title>
+  <title>Fancy Music Player</title>
   <style>
-    /* Reset some default styling */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    /* Page background */
     body {
       font-family: 'Arial', sans-serif;
-      background-color: #e0e7ff; /* Softer, light blue background */
-      color: #333;
+      background: radial-gradient(circle, #1f1f1f, #131313);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 30px;
+      color: #fff;
+      padding: 20px;
     }
 
     h1 {
-      font-size: 36px;
+      font-size: 32px;
       margin-bottom: 20px;
-      color: #5b78b0;
-      text-shadow: 3px 3px 6px rgba(0,0,0,0.1); /* Softer shadow for text */
+      color: #fff;
+      text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+      text-align: center;
     }
 
-    /* Audio player container */
     #audioContainer {
-      background-color: #ffffff;
-      border-radius: 20px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       padding: 30px;
-      width: 450px;
+      width: 100%;
+      max-width: 400px;
       text-align: center;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     #audioContainer:hover {
-      transform: translateY(-5px); /* Subtle lift effect */
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
     }
 
-    /* Audio player */
     #myAudio {
       width: 100%;
       border-radius: 12px;
-      outline: none;
     }
 
-    /* Track name display */
     #trackName {
       margin-top: 15px;
-      font-size: 18px;
-      color: #444;
+      font-size: 16px;
+      color: #eee;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* Controls container */
-    #playerControls {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
+#playerControls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
 
-    /* Buttons style */
-    button, select {
-      padding: 12px 24px;
-      font-size: 16px;
-      color: #fff;
-      background-color: #4a90e2;
+    button {
+      background: rgba(255, 255, 255, 0.3);
       border: none;
-      border-radius: 50px;
+      padding: 15px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 24px;
       cursor: pointer;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease-in-out;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    button:hover, select:hover {
-      background-color: #357ab7;
-      transform: translateY(-3px);
-    }
+button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
 
-    button:focus, select:focus {
-      outline: none;
-      box-shadow: 0 0 5px 2px rgba(74, 144, 226, 0.5);
-    }
+button i {
+  pointer-events: none;
+}
 
-    /* Playback mode selection */
     select {
-      width: 180px;
-      background-color: #e1f1fc;
       padding: 12px;
-      border-radius: 50px;
+      font-size: 14px;
+      color: #444;
+      background-color: #ffdfdf;
+      border-radius: 20px;
+      border: none;
+      margin-top: 20px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     }
 
-    /* Volume control */
     #volumeControl {
       margin-top: 20px;
     }
@@ -114,10 +111,9 @@
       margin-top: 10px;
     }
 
-    /* Playlist display */
     #playlist {
-      margin-top: 30px;
-      max-height: 200px;
+      margin-top: 20px;
+      max-height: 150px;
       overflow-y: auto;
     }
 
@@ -126,100 +122,109 @@
       padding: 0;
     }
 
-    #playlist li {
-      padding: 12px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      border-radius: 8px;
-    }
+  #playlist li {
+    padding: 12px;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+  }
 
-    #playlist li:hover {
-      background-color: #e1f1fc;
-      transform: translateX(5px); /* Slight shift effect */
-    }
+  #playlist li:hover {
+    background: linear-gradient(135deg, #261115, #ff7eb3);
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  }
 
-    /* Playback Time Display */
-    #timeDisplay {
-      margin-top: 20px;
-      font-size: 16px;
-      color: #777;
-    }
+  #playlist li.playing {
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    box-shadow: 0 15px 30px rgba(255, 223, 0, 0.6);
+    color: #222;
+  }
 
-    #timeDisplay span {
-      font-weight: bold;
-    }
 
-    /* Responsive adjustments */
+#timeDisplay {
+  color: #ffdfdf;
+  text-shadow: 0 0 10px #ff758c;
+}
+
     @media (max-width: 600px) {
       #audioContainer {
-        width: 90%;
+        padding: 20px;
       }
 
       h1 {
-        font-size: 28px;
+        font-size: 24px;
+      }
+
+      button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+
+      #volumeControl input {
+        margin-top: 5px;
+      }
+
+      #playlist li {
+        padding: 8px;
       }
     }
+
   </style>
 </head>
 <body>
-
-  <h1>Music Player</h1>
-
-  <!-- Audio player container -->
+  <h1>Fancy Music Player</h1>
   <div id="audioContainer">
-    <!-- Audio player with controls -->
     <audio id="myAudio" controls></audio>
-    <p id="trackName"></p>  <!-- To display the current track name -->
-
-    <!-- Player controls (Previous, Play/Pause, Next) -->
+    <p id="trackName"></p>
+    <br>
     <div id="playerControls">
-      <button id="prevButton">Previous</button>
-      <button id="playPauseButton">Play</button>
-      <button id="nextButton">Next</button>
+      <button id="prevButton" title="上一首">
+        <i class="fas fa-backward">⏮</i>
+      </button>
+      <button id="playPauseButton" title="播放/暫停">
+        <i class="fas fa-play">⏯</i>
+      </button>
+      <button id="nextButton" title="下一首">
+        <i class="fas fa-forward">⏭</i>
+      </button>
     </div>
-    <br> 
-    <!-- Playback Mode Selection -->
     <div>
-      <label for="playMode" style="font-size: 16px;">选择播放方式: </label>
+      <label for="playMode">选择播放方式: </label>
       <select id="playMode">
         <option value="sequential">顺序播放</option>
         <option value="random">随机播放</option>
         <option value="loop">循环播放</option>
       </select>
     </div>
-
-    <!-- Volume Control -->
     <div id="volumeControl">
-      <label for="volume" style="font-size: 16px;">音量: </label>
+      <label for="volume">音量: </label>
       <input type="range" id="volume" min="0" max="1" step="0.01" value="0.3" />
     </div>
-
-    <!-- Playlist -->
     <div id="playlist">
-      <ul>
-        <!-- Music list items will be populated dynamically -->
-      </ul>
+      <ul></ul>
     </div>
-
-    <!-- Playback Time Display -->
+    <br>
     <div id="timeDisplay">
       <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
     </div>
   </div>
 
   <script>
-    // Music files array
     var playlist = [
-      'Tower of Flower (320 kbps).mp3',
-      'Arifureta Season 3 - Opening Full『Unending Wish』by Void_Chords feat. MindaRyn.mp3',
-      '(Lyrics-CC)「ホロウ」Shiyui 「魔王2099」Full Opening Song ⧸Demon Lord 2099.mp3',
-      'MUSIC/AnyConv.com__(音訊)[サクラノ刻] 樱之刻 OST [已更新正式版]-第16集-14 夏の夜の展覧会は.mp3'
+      './D/Flower-Colored Youth.mp3',
+      './D/The sunflower of the night.mp3',
+      './D/farewell.mp3',
+      './D/Reside.mp3',
+      './D/Identit(Piano Solo).mp3'
     ];
 
-    // Current track index
     var currentTrack = 0;
-
-    // Get elements
     var audio = document.getElementById('myAudio');
     var trackNameDisplay = document.getElementById('trackName');
     var playPauseButton = document.getElementById('playPauseButton');
@@ -228,57 +233,72 @@
     var playModeSelect = document.getElementById('playMode');
     var volumeSlider = document.getElementById('volume');
     var playlistContainer = document.getElementById('playlist').querySelector('ul');
-    var timeDisplay = document.getElementById('timeDisplay');
     var currentTimeDisplay = document.getElementById('currentTime');
     var durationDisplay = document.getElementById('duration');
-
-    // Default playback mode
     var playMode = 'sequential';
 
-    // Helper function to extract file name from path
     function getFileName(filePath) {
       return filePath.split('/').pop();
     }
 
-    // Set default track and display
-    audio.src = playlist[currentTrack];
-    trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+    function updateTrackInfo() {
+      trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+    }
 
-    // Populate the playlist
+    function updateTimeDisplay() {
+      var currentMinutes = Math.floor(audio.currentTime / 60);
+      var currentSeconds = Math.floor(audio.currentTime % 60);
+      var durationMinutes = Math.floor(audio.duration / 60);
+      var durationSeconds = Math.floor(audio.duration % 60);
+
+      currentTimeDisplay.textContent = 
+        (currentMinutes < 10 ? '0' : '') + currentMinutes + ':' + 
+        (currentSeconds < 10 ? '0' : '') + currentSeconds;
+
+      if (!isNaN(durationMinutes) && !isNaN(durationSeconds)) {
+        durationDisplay.textContent = 
+          (durationMinutes < 10 ? '0' : '') + durationMinutes + ':' + 
+          (durationSeconds < 10 ? '0' : '') + durationSeconds;
+      }
+    }
+
+    audio.src = playlist[currentTrack];
+    updateTrackInfo();
+
     playlist.forEach(function(track, index) {
       var listItem = document.createElement('li');
-      listItem.textContent = getFileName(track);  // Only show file name
+      listItem.textContent = getFileName(track);
       listItem.addEventListener('click', function() {
         currentTrack = index;
         audio.src = playlist[currentTrack];
-        trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
-        audio.play();
-        playPauseButton.textContent = 'Pause';
-      });
+        updateTrackInfo();
+        audio.play().then(() => {
+        playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
+       }).catch(() => {
+  	  playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
+       });
+     });
       playlistContainer.appendChild(listItem);
     });
 
-    // Function to get a random track index (excluding the current one)
     function getRandomTrack() {
       var randomIndex;
       do {
         randomIndex = Math.floor(Math.random() * playlist.length);
-      } while (randomIndex === currentTrack); // Ensure it's not the same track
+      } while (randomIndex === currentTrack);
       return randomIndex;
     }
 
-    // Play/Pause functionality
-    playPauseButton.addEventListener('click', function() {
-      if (audio.paused) {
-        audio.play();
-        playPauseButton.textContent = 'Pause';
-      } else {
-        audio.pause();
-        playPauseButton.textContent = 'Play';
-      }
-    });
+playPauseButton.addEventListener('click', function() {
+  if (audio.paused) {
+    audio.play();
+    playPauseButton.querySelector('i').className = 'fas fa-pause';
+  } else {
+    audio.pause();
+    playPauseButton.querySelector('i').className = 'fas fa-play';
+  }
+});
 
-    // Next track functionality
     nextButton.addEventListener('click', function() {
       if (playMode === 'random') {
         currentTrack = getRandomTrack();
@@ -286,12 +306,13 @@
         currentTrack = (currentTrack + 1) % playlist.length;
       }
       audio.src = playlist[currentTrack];
-      trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
-      audio.play();
-      playPauseButton.textContent = 'Pause';
-    });
-
-    // Previous track functionality
+      updateTrackInfo();
+      audio.play().then(() => {
+      playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
+      }).catch(() => {
+  	  playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
+       });
+     });
     prevButton.addEventListener('click', function() {
       if (playMode === 'random') {
         currentTrack = getRandomTrack();
@@ -299,50 +320,42 @@
         currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
       }
       audio.src = playlist[currentTrack];
-      trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
-      audio.play();
-      playPauseButton.textContent = 'Pause';
-    });
+      updateTrackInfo();
+      audio.play().then(() => {
+      playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
+      }).catch(() => {
+  	  playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
+       });
+     });
 
-    // Playback mode selection
     playModeSelect.addEventListener('change', function() {
       playMode = this.value;
+      if (playMode === 'loop') {
+        audio.loop = true;
+      } else {
+        audio.loop = false;
+      }
     });
 
-    // Volume control
     volumeSlider.addEventListener('input', function() {
       audio.volume = this.value;
     });
 
-    // Update the current time and duration display
-    audio.addEventListener('timeupdate', function() {
-      var currentMinutes = Math.floor(audio.currentTime / 60);
-      var currentSeconds = Math.floor(audio.currentTime % 60);
-      var durationMinutes = Math.floor(audio.duration / 60);
-      var durationSeconds = Math.floor(audio.duration % 60);
+    audio.addEventListener('timeupdate', updateTimeDisplay);
 
-      if (!isNaN(currentMinutes) && !isNaN(currentSeconds)) {
-        currentTimeDisplay.textContent = 
-          (currentMinutes < 10 ? '0' : '') + currentMinutes + ':' +
-          (currentSeconds < 10 ? '0' : '') + currentSeconds;
-      }
-
-      if (!isNaN(durationMinutes) && !isNaN(durationSeconds)) {
-        durationDisplay.textContent = 
-          (durationMinutes < 10 ? '0' : '') + durationMinutes + ':' +
-          (durationSeconds < 10 ? '0' : '') + durationSeconds;
-      }
-    });
-
-    // Automatically move to the next track when the current one ends
     audio.addEventListener('ended', function() {
-      if (playMode === 'loop') {
-        audio.currentTime = 0;
+      if (playMode === 'sequential') {
+        nextButton.click();
+      } else if (playMode === 'random') {
+        currentTrack = getRandomTrack();
+        audio.src = playlist[currentTrack];
+        updateTrackInfo();
         audio.play();
-      } else {
-        nextButton.click(); // Simulate the "Next" button click
       }
     });
+
+    audio.addEventListener('loadedmetadata', updateTimeDisplay);
+
 document.addEventListener('visibilitychange', function () {
   if (document.visibilityState === 'hidden') {
     console.log('頁面進入背景狀態');
@@ -371,9 +384,6 @@ document.addEventListener('visibilitychange', function () {
 });
 });
 
-
-
   </script>
-
 </body>
 </html>
