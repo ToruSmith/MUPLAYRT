@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
   <title>Fancy Music Player</title>
   <style>
     * {
@@ -32,7 +35,7 @@
     }
 
     #audioContainer {
-      background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+      background: linear-gradient(135deg, #1f87db 0%, #66a6ff 100%);
       border-radius: 24px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       padding: 30px;
@@ -54,42 +57,67 @@
 
     #trackName {
       margin-top: 15px;
-      font-size: 16px;
-      color: #eee;
+      font-size: 18px;
+      color: #ffdfdf;
+      text-shadow: 0 0 10px #ff758c;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-#playerControls {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-    button {
-      background: rgba(255, 255, 255, 0.3);
-      border: none;
-      padding: 15px;
-      border-radius: 50%;
-      color: #fff;
-      font-size: 24px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    #playerControls {
       display: flex;
-      align-items: center;
+      gap: 20px;
       justify-content: center;
+      align-items: center;
     }
 
-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-}
+    .control-button {
+      width: 60px;
+      height: 60px;
+      border: none;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #ff9e2c, #ff5400);
+      /* 黃橙漸變 */
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2), 0 -4px 5px rgba(255, 255, 255, 0.1) inset;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
 
-button i {
-  pointer-events: none;
-}
+    .control-button i {
+      font-size: 24px;
+      color: #fff;
+      transition: transform 0.2s ease;
+    }
+
+    /* 懸浮效果 */
+    .control-button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3), 0 -6px 10px rgba(255, 255, 255, 0.15) inset;
+    }
+
+    .control-button:hover i {
+      transform: scale(1.2);
+    }
+
+    /* 點擊效果 */
+    .control-button:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 -3px 5px rgba(255, 255, 255, 0.1) inset;
+    }
+
+    .control-button:active i {
+      transform: scale(1);
+    }
+
+    button i {
+      pointer-events: none;
+      transition: transform 0.3s ease;
+      font-size: 24px;
+    }
 
     select {
       padding: 12px;
@@ -103,12 +131,82 @@ button i {
     }
 
     #volumeControl {
-      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 85%;
+      /* 使用100%寬度，或更改為auto以根據內容自動調整 */
+      max-width: 400px;
+      /* 最大寬度，以避免在大螢幕上過寬 */
+      margin-top: 10px;
+      margin-left: auto;
+      margin-right: auto;
+      /* 確保容器本身居中 */
+    }
+
+    #volumeControl label {
+      font-size: 14px;
+      color: #fff;
+    }
+
+    #volumeIcon {
+      margin-top: 6px;
+      color: #b8e7fc;
+      font-size: 25px;
+      transition: color 0.3s ease;
     }
 
     #volumeControl input {
-      width: 100%;
+      flex-grow: 1;
       margin-top: 10px;
+    }
+
+    :root {
+      --range: 0%;
+    }
+
+    #range {
+      appearance: none;
+      width: 300px;
+      position: relative;
+    }
+
+    #range:focus {
+      outline: none;
+    }
+
+    #range::before {
+      content: "";
+      position: absolute;
+      width: var(--range);
+      height: 8px;
+      background: #fa4848;
+      /* 拉軸左邊顏色 */
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    #range::-webkit-slider-runnable-track {
+      background: #b8e7fc;
+      height: 8px;
+      border-radius: 1px;
+      /* 軌道軸圓角 */
+    }
+
+    #range::-webkit-slider-thumb {
+      width: 16px;
+      /* 拉軸搖桿 */
+      height: 16px;
+      border-radius: 50%;
+      border: none;
+      appearance: none;
+      background-color: #f70a0a;
+      margin-top: -3.5px;
+      z-index: 99;
+      position: relative;
+      transition: .5s all ease;
     }
 
     #playlist {
@@ -122,35 +220,34 @@ button i {
       padding: 0;
     }
 
-  #playlist li {
-    padding: 12px;
-    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    border-radius: 12px;
-    margin-bottom: 10px;
-    color: #fff;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    position: relative;
-  }
+    #playlist li {
+      padding: 12px;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
 
-  #playlist li:hover {
-    background: linear-gradient(135deg, #261115, #ff7eb3);
-    transform: scale(1.05);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-  }
+    #playlist li:hover {
+      background: linear-gradient(135deg, #d92400, #fce651);
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
 
-  #playlist li.playing {
-    background: linear-gradient(135deg, #ffd700, #ff8c00);
-    box-shadow: 0 15px 30px rgba(255, 223, 0, 0.6);
-    color: #222;
-  }
+    #playlist li.playing {
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      box-shadow: 0 15px 30px rgba(255, 223, 0, 0.6);
+      color: #222;
+    }
 
-
-#timeDisplay {
-  color: #ffdfdf;
-  text-shadow: 0 0 10px #ff758c;
-}
+    #timeDisplay {
+      color: #ffdfdf;
+      text-shadow: 0 0 10px #ff758c;
+    }
 
     @media (max-width: 600px) {
       #audioContainer {
@@ -162,8 +259,10 @@ button i {
       }
 
       button {
-        padding: 8px 16px;
-        font-size: 14px;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        padding: 10px;
       }
 
       #volumeControl input {
@@ -175,43 +274,136 @@ button i {
       }
     }
 
+    /* 播放模式容器 */
+    #playModeControls {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    /* 播放模式按鈕 */
+    .mode-button {
+      width: 60px;
+      height: 60px;
+      border: none;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #50c878, #28a745);
+      /* 綠色漸變 */
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2), 0 -4px 5px rgba(255, 255, 255, 0.1) inset;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .mode-button i {
+      font-size: 24px;
+      color: #fff;
+      transition: transform 0.2s ease, color 0.3s ease;
+    }
+
+    /* 懸浮效果 */
+    .mode-button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3), 0 -6px 10px rgba(255, 255, 255, 0.15) inset;
+    }
+
+    .mode-button:hover i {
+      transform: scale(1.2);
+    }
+
+    /* 激活狀態 */
+    .mode-button.active {
+      background: linear-gradient(145deg, #ffd700, #ff8c00);
+      /* 金橙色漸變 */
+      box-shadow: 0 15px 30px rgba(255, 223, 0, 0.6);
+    }
+
+    .mode-button.active i {
+      color: #222;
+      /* 深色字體 */
+    }
+
+    /*樂曲進度條*/
+    #progressContainer {
+      width: 100%;
+      height: 10px;
+      background: #b8e7fc;
+      position: relative;
+      cursor: pointer;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: #fa6305;
+      border-radius: 5px;
+    }
+
+    #progressThumb {
+      width: 15px;
+      height: 15px;
+      background: #f0f0f5;
+      border-radius: 20%;
+      position: absolute;
+      top: -3px;
+      left: 0;
+      transform: translateX(-50%);
+      cursor: pointer;
+    }
   </style>
 </head>
+
 <body>
   <h1>Fancy Music Player</h1>
   <div id="audioContainer">
-    <audio id="myAudio" controls></audio>
+    <audio id="myAudio"></audio>
     <p id="trackName"></p>
     <br>
     <div id="playerControls">
-      <button id="prevButton" title="上一首">
-        <i class="fas fa-backward">⏮</i>
+      <button id="prevButton" class="control-button" title="上一首">
+        <i class="fas fa-backward"></i>
       </button>
-      <button id="playPauseButton" title="播放/暫停">
-        <i class="fas fa-play">⏯</i>
+      <button id="playPauseButton" class="control-button" title="播放/暫停">
+        <i class="fas fa-play"></i>
       </button>
-      <button id="nextButton" title="下一首">
-        <i class="fas fa-forward">⏭</i>
+      <button id="nextButton" class="control-button" title="下一首">
+        <i class="fas fa-forward"></i>
       </button>
     </div>
-    <div>
-      <label for="playMode">选择播放方式: </label>
-      <select id="playMode">
-        <option value="sequential">顺序播放</option>
-        <option value="random">随机播放</option>
-        <option value="loop">循环播放</option>
-      </select>
+    <div id="progressContainer">
+      <div id="progressBar"></div>
+      <div id="progressThumb"></div>
     </div>
-    <div id="volumeControl">
-      <label for="volume">音量: </label>
-      <input type="range" id="volume" min="0" max="1" step="0.01" value="0.3" />
-    </div>
-    <div id="playlist">
-      <ul></ul>
-    </div>
-    <br>
+
     <div id="timeDisplay">
       <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
+    </div>
+
+    <div id="volumeControl">
+      <i class="fas fa-volume-low" id="volumeIcon"></i>
+      <input type="range" id="range" min="0" max="100" value="20">
+      <i class="fas fa-volume-high" id="volumeIcon"></i>
+    </div>
+
+    <div id="playModeControls">
+      <button class="mode-button" data-mode="sequential" title="順序播放">
+        <i class="fas fa-list-ol"></i>
+      </button>
+      <button class="mode-button" data-mode="random" title="隨機播放">
+        <i class="fas fa-random"></i>
+      </button>
+      <button class="mode-button" data-mode="loop" title="循環播放">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+    </div>
+
+    <div id="playlist">
+      <ul></ul>
     </div>
   </div>
 
@@ -223,19 +415,15 @@ button i {
       './D/Reside.mp3',
       './D/Identit(Piano Solo).mp3'
     ];
-
     var currentTrack = 0;
     var audio = document.getElementById('myAudio');
     var trackNameDisplay = document.getElementById('trackName');
     var playPauseButton = document.getElementById('playPauseButton');
     var prevButton = document.getElementById('prevButton');
     var nextButton = document.getElementById('nextButton');
-    var playModeSelect = document.getElementById('playMode');
-    var volumeSlider = document.getElementById('volume');
     var playlistContainer = document.getElementById('playlist').querySelector('ul');
     var currentTimeDisplay = document.getElementById('currentTime');
     var durationDisplay = document.getElementById('duration');
-    var playMode = 'sequential';
 
     function getFileName(filePath) {
       return filePath.split('/').pop();
@@ -250,21 +438,17 @@ button i {
       var currentSeconds = Math.floor(audio.currentTime % 60);
       var durationMinutes = Math.floor(audio.duration / 60);
       var durationSeconds = Math.floor(audio.duration % 60);
-
-      currentTimeDisplay.textContent = 
-        (currentMinutes < 10 ? '0' : '') + currentMinutes + ':' + 
+      currentTimeDisplay.textContent =
+        (currentMinutes < 10 ? '0' : '') + currentMinutes + ':' +
         (currentSeconds < 10 ? '0' : '') + currentSeconds;
-
       if (!isNaN(durationMinutes) && !isNaN(durationSeconds)) {
-        durationDisplay.textContent = 
-          (durationMinutes < 10 ? '0' : '') + durationMinutes + ':' + 
+        durationDisplay.textContent =
+          (durationMinutes < 10 ? '0' : '') + durationMinutes + ':' +
           (durationSeconds < 10 ? '0' : '') + durationSeconds;
       }
     }
-
     audio.src = playlist[currentTrack];
     updateTrackInfo();
-
     playlist.forEach(function(track, index) {
       var listItem = document.createElement('li');
       listItem.textContent = getFileName(track);
@@ -273,13 +457,36 @@ button i {
         audio.src = playlist[currentTrack];
         updateTrackInfo();
         audio.play().then(() => {
-        playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
-       }).catch(() => {
-  	  playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
-       });
-     });
+          playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
+        }).catch(() => {
+          playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
+        });
+      });
       playlistContainer.appendChild(listItem);
     });
+    const modeButtons = document.querySelectorAll('.mode-button');
+    let playMode = 'sequential'; // 默認播放模式
+    // 點擊按鈕切換播放模式
+    modeButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // 1. 移除其他按鈕的 "active" 狀態
+        modeButtons.forEach(btn => btn.classList.remove('active'));
+        // 2. 為當前點擊的按鈕添加 "active" 狀態
+        button.classList.add('active');
+        // 3. 更新播放模式
+        playMode = button.dataset.mode;
+        applyPlayMode();
+      });
+    });
+    // 播放模式的應用邏輯
+    function applyPlayMode() {
+      // 切換播放模式時設置相關行為
+      if (playMode === 'loop') {
+        audio.loop = true; // 循環播放
+      } else {
+        audio.loop = false; // 非循環播放
+      }
+    }
 
     function getRandomTrack() {
       var randomIndex;
@@ -288,17 +495,15 @@ button i {
       } while (randomIndex === currentTrack);
       return randomIndex;
     }
-
-playPauseButton.addEventListener('click', function() {
-  if (audio.paused) {
-    audio.play();
-    playPauseButton.querySelector('i').className = 'fas fa-pause';
-  } else {
-    audio.pause();
-    playPauseButton.querySelector('i').className = 'fas fa-play';
-  }
-});
-
+    playPauseButton.addEventListener('click', function() {
+      if (audio.paused) {
+        audio.play();
+        playPauseButton.querySelector('i').className = 'fas fa-pause';
+      } else {
+        audio.pause();
+        playPauseButton.querySelector('i').className = 'fas fa-play';
+      }
+    });
     nextButton.addEventListener('click', function() {
       if (playMode === 'random') {
         currentTrack = getRandomTrack();
@@ -308,11 +513,11 @@ playPauseButton.addEventListener('click', function() {
       audio.src = playlist[currentTrack];
       updateTrackInfo();
       audio.play().then(() => {
-      playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
+        playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
       }).catch(() => {
-  	  playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
-       });
-     });
+        playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
+      });
+    });
     prevButton.addEventListener('click', function() {
       if (playMode === 'random') {
         currentTrack = getRandomTrack();
@@ -322,27 +527,28 @@ playPauseButton.addEventListener('click', function() {
       audio.src = playlist[currentTrack];
       updateTrackInfo();
       audio.play().then(() => {
-      playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
+        playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
       }).catch(() => {
-  	  playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
-       });
-     });
-
-    playModeSelect.addEventListener('change', function() {
-      playMode = this.value;
-      if (playMode === 'loop') {
-        audio.loop = true;
-      } else {
-        audio.loop = false;
-      }
+        playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
+      });
     });
-
-    volumeSlider.addEventListener('input', function() {
-      audio.volume = this.value;
+    // 初始化滑桿範圍條樣式
+    document.addEventListener('DOMContentLoaded', () => {
+      const range = document.getElementById("range");
+      const updateVar = (value) => {
+        document.documentElement.style.setProperty("--range", value + "%");
+      };
+      // 設定初始值
+      updateVar(range.value);
+      // 設定音量初始值
+      audio.volume = range.value / 100;
+      // 添加滑桿事件監聽
+      range.addEventListener("input", () => {
+        updateVar(range.value);
+        audio.volume = range.value / 100; // 更新音量
+      });
     });
-
     audio.addEventListener('timeupdate', updateTimeDisplay);
-
     audio.addEventListener('ended', function() {
       if (playMode === 'sequential') {
         nextButton.click();
@@ -353,37 +559,120 @@ playPauseButton.addEventListener('click', function() {
         audio.play();
       }
     });
-
     audio.addEventListener('loadedmetadata', updateTimeDisplay);
-
-document.addEventListener('visibilitychange', function () {
-  if (document.visibilityState === 'hidden') {
-    console.log('頁面進入背景狀態');
-    // 可以在這裡暫停某些非必要的功能
-  } else if (document.visibilityState === 'visible') {
-    console.log('頁面回到前景');
-    if (audio.paused) {
-      audio.play(); // 自動恢復音樂播放
+    audio.addEventListener("timeupdate", () => {
+      if (!isDragging) {
+        const progress = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = `${progress}%`;
+        progressThumb.style.left = `${progress}%`;
+      }
+    });
+    progressContainer.addEventListener("click", (e) => {
+      const containerWidth = progressContainer.offsetWidth;
+      const offsetX = e.offsetX;
+      const newProgress = offsetX / containerWidth;
+      audio.currentTime = newProgress * audio.duration;
+    });
+    // 樂曲進度條
+    let isDragging = false;
+    // 監聽滑動點的點擊與拖曳行為
+    progressThumb.addEventListener("mousedown", (e) => {
+      e.preventDefault(); // 防止選中文字等問題
+      isDragging = true;
+      document.addEventListener("mousemove", handleDragging);
+      document.addEventListener("mouseup", stopDragging);
+    });
+    // 處理拖曳中的更新
+    function handleDragging(e) {
+      const containerRect = progressContainer.getBoundingClientRect();
+      let newLeft = e.clientX - containerRect.left;
+      const containerWidth = containerRect.width;
+      // 限制範圍：防止超出進度條
+      if (newLeft < 0) newLeft = 0;
+      if (newLeft > containerWidth) newLeft = containerWidth;
+      // 計算新進度比例
+      const newProgress = newLeft / containerWidth;
+      // 更新進度條視覺效果
+      progressBar.style.width = `${newProgress * 100}%`;
+      progressThumb.style.left = `${newProgress * 100}%`;
+      // 暫停更新播放進度，等拖曳完成再同步
+      if (audio.duration) {
+        audio.currentTime = newProgress * audio.duration;
+      }
     }
-  }
-let wakeLock = null;
+    // 停止拖曳後同步進度
+    function stopDragging() {
+      isDragging = false;
+      document.removeEventListener("mousemove", handleDragging);
+      document.removeEventListener("mouseup", stopDragging);
+      // 修正：確保拖曳後的播放時間被同步
+      const progress = parseFloat(progressBar.style.width) / 100;
+      if (audio.duration) {
+        audio.currentTime = progress * audio.duration;
+      }
+    }
+    // 點擊進度條更新播放時間
+    progressContainer.addEventListener("click", (e) => {
+      const containerRect = progressContainer.getBoundingClientRect();
+      const offsetX = e.clientX - containerRect.left;
+      const containerWidth = containerRect.width;
+      // 防止不合理點擊導致回到0
+      if (offsetX < 0 || offsetX > containerWidth) return;
+      // 計算新進度比例並更新
+      const newProgress = offsetX / containerWidth;
+      progressBar.style.width = `${newProgress * 100}%`;
+      progressThumb.style.left = `${newProgress * 100}%`;
+      if (audio.duration) {
+        audio.currentTime = newProgress * audio.duration;
+      }
+    });
+    // 同步進度條
+    audio.addEventListener("timeupdate", () => {
+      if (!isDragging && audio.duration) {
+        const progress = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = `${progress}%`;
+        progressThumb.style.left = `${progress}%`;
+      }
+    });
+    // 處理黑屏可播放
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'hidden') {
+        console.log('頁面進入背景狀態');
+        // 可以在這裡暫停某些非必要的功能
+      } else if (document.visibilityState === 'visible') {
+        console.log('頁面回到前景');
+        if (audio.paused) {
+          audio.play(); // 自動恢復音樂播放
+        }
+      }
+      let wakeLock = null;
+      async function requestWakeLock() {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+          console.log('螢幕鎖已啟用，防止進入休眠。');
+        } catch (err) {
+          console.error(`螢幕鎖請求失敗：${err.name}, ${err.message}`);
+        }
+      }
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible' && wakeLock === null) {
+          requestWakeLock(); // 當頁面可見時，重新請求螢幕鎖
+        }
+      });
+    });
+    let sleepTimer = null;
 
-async function requestWakeLock() {
-  try {
-    wakeLock = await navigator.wakeLock.request('screen');
-    console.log('螢幕鎖已啟用，防止進入休眠。');
-  } catch (err) {
-    console.error(`螢幕鎖請求失敗：${err.name}, ${err.message}`);
-  }
-}
-
-document.addEventListener('visibilitychange', function () {
-  if (document.visibilityState === 'visible' && wakeLock === null) {
-    requestWakeLock(); // 當頁面可見時，重新請求螢幕鎖
-  }
-});
-});
-
+    function activateSleepMode(minutes) {
+      if (sleepTimer) clearTimeout(sleepTimer);
+      sleepTimer = setTimeout(() => {
+        audio.pause();
+        playPauseButton.textContent = 'Play';
+        console.log('睡眠模式：音樂已停止。');
+      }, minutes * 60 * 1000); // 分鐘轉毫秒
+    }
+    // 啟用40分鐘睡眠模式
+    activateSleepMode(40);
   </script>
 </body>
+
 </html>
