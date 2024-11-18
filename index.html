@@ -16,38 +16,64 @@
 
     body {
       font-family: 'Arial', sans-serif;
-      background: radial-gradient(circle, #1f1f1f, #131313);
+      /*background: linear-gradient(135deg, #f0f4f8, #d9eaf7);*/
+      background: url('https://i.imgur.com/JdqsBVj.jpeg') no-repeat center center fixed;
+      color: #222;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      color: #fff;
-      padding: 20px;
+      padding: 30px;
     }
 
     h1 {
-      font-size: 32px;
+      font-size: 36px;
       margin-bottom: 20px;
-      color: #fff;
-      text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
-      text-align: center;
+      color: #3461a4;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
     }
 
+    /* 音樂播放器容器 */
     #audioContainer {
-      background: linear-gradient(135deg, #1f87db 0%, #66a6ff 100%);
+      background: linear-gradient(135deg, #1e1e1e, #333333, #1a1a1a);
       border-radius: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      box-shadow:
+        inset 0 0 10px rgba(255, 255, 255, 0.1),
+        /* 內部高光 */
+        0 10px 30px rgba(0, 0, 0, 0.8),
+        /* 外部陰影 */
+        0 5px 15px rgba(0, 0, 0, 0.6);
+      /* 額外的外部陰影 */
       padding: 30px;
       width: 100%;
       max-width: 400px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* 酷炫的光澤效果 */
+    #audioContainer::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), transparent 70%);
+      transform: rotate(45deg);
+      pointer-events: none;
+      opacity: 0.2;
     }
 
     #audioContainer:hover {
       transform: translateY(-10px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      box-shadow:
+        inset 0 0 15px rgba(255, 255, 255, 0.2),
+        0 15px 40px rgba(0, 0, 0, 0.9),
+        0 8px 20px rgba(0, 0, 0, 0.7);
     }
 
     #myAudio {
@@ -58,7 +84,7 @@
     #trackName {
       margin-top: 15px;
       font-size: 18px;
-      color: #ffdfdf;
+      color: #fcfc8b;
       text-shadow: 0 0 10px #ff758c;
       white-space: nowrap;
       overflow: hidden;
@@ -77,9 +103,8 @@
       height: 60px;
       border: none;
       border-radius: 50%;
-      background: linear-gradient(145deg, #ff9e2c, #ff5400);
-      /* 黃橙漸變 */
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2), 0 -4px 5px rgba(255, 255, 255, 0.1) inset;
+      background: linear-gradient(145deg, #f1f8ff, #c1d5f5);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       display: flex;
       justify-content: center;
@@ -89,14 +114,13 @@
 
     .control-button i {
       font-size: 24px;
-      color: #fff;
-      transition: transform 0.2s ease;
+      color: #28527a;
     }
 
     /* 懸浮效果 */
     .control-button:hover {
+      background: linear-gradient(145deg, #d0e4fa, #a7c7ee);
       transform: translateY(-5px);
-      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3), 0 -6px 10px rgba(255, 255, 255, 0.15) inset;
     }
 
     .control-button:hover i {
@@ -150,11 +174,26 @@
       color: #fff;
     }
 
-    #volumeIcon {
+    #lowvolumeIcon,
+    #highvolumeIcon {
       margin-top: 6px;
-      color: #b8e7fc;
+      color: #a8afb3;
       font-size: 25px;
-      transition: color 0.3s ease;
+      transition: color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #lowvolumeIcon:hover {
+      color: #3498db;
+      transform: scale(1.2);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      /* 添加阴影效果 */
+    }
+
+    #highvolumeIcon:hover {
+      color: #3498db;
+      transform: scale(1.2);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      /* 添加阴影效果 */
     }
 
     #volumeControl input {
@@ -181,7 +220,7 @@
       position: absolute;
       width: var(--range);
       height: 8px;
-      background: #fa4848;
+      background: #82d0fa;
       /* 拉軸左邊顏色 */
       top: 0;
       left: 0;
@@ -189,7 +228,7 @@
     }
 
     #range::-webkit-slider-runnable-track {
-      background: #b8e7fc;
+      background: #d1e3eb;
       height: 8px;
       border-radius: 1px;
       /* 軌道軸圓角 */
@@ -202,17 +241,71 @@
       border-radius: 50%;
       border: none;
       appearance: none;
-      background-color: #f70a0a;
-      margin-top: -3.5px;
+      background-color: #e6f1f7;
+      margin-top: -3.7px;
       z-index: 99;
       position: relative;
       transition: .5s all ease;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+      /* 添加阴影 */
     }
 
     #playlist {
       margin-top: 20px;
       max-height: 150px;
       overflow-y: auto;
+    }
+
+    #playlist {
+      margin-top: 20px;
+      max-height: 150px;
+      overflow-y: auto;
+      background-color: #33495e;
+      /* 深藍灰色背景 */
+      border-radius: 20px;
+      /* 圓角 */
+      padding: 10px;
+      color: #ecf0f1;
+      /* 浅色文字，便於閱讀 */
+    }
+
+    /* 設定滾動條的寬度 */
+    #playlist::-webkit-scrollbar {
+      width: 12px;
+      /* 垂直滾動條寬度 */
+    }
+
+    /* 滾動條滑塊（thumb）的樣式 */
+    #playlist::-webkit-scrollbar-thumb {
+      background-color: #2c3e50;
+      /* 深灰色滑塊 */
+      border-radius: 20px;
+      /* 圓角 */
+      border: 1px solid #c3defa;
+      /* 滑塊邊界，與背景相同 */
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      /* 漸變過渡 */
+    }
+
+    /* 滾動條滑塊（thumb）在懸停時的樣式 */
+    #playlist::-webkit-scrollbar-thumb:hover {
+      background-color: #8da3b8;
+      /* 懸停時的顏色：亮色 */
+      box-shadow: 0 0 20px rgba(22, 160, 133, 0.5);
+      /* 添加陰影效果 */
+    }
+
+    /* 滾動條軌道（track）的樣式 */
+    #playlist::-webkit-scrollbar-track {
+      background-color: #2c3e50;
+      /* 和背景相同的顏色 */
+      border-radius: 10px;
+      /* 圓角 */
+    }
+
+    /* 滾動條角落部分（可選） */
+    #playlist::-webkit-scrollbar-corner {
+      background-color: transparent;
     }
 
     #playlist ul {
@@ -329,8 +422,8 @@
     /*樂曲進度條*/
     #progressContainer {
       width: 100%;
-      height: 10px;
-      background: #b8e7fc;
+      height: 8px;
+      background: #d1e3eb;
       position: relative;
       cursor: pointer;
       margin: 20px 0;
@@ -340,20 +433,21 @@
     #progressBar {
       width: 0%;
       height: 100%;
-      background: #fa6305;
+      background: #ff0000;
       border-radius: 5px;
     }
 
     #progressThumb {
       width: 15px;
       height: 15px;
-      background: #f0f0f5;
-      border-radius: 20%;
+      background: #f20c0c;
+      border-radius: 30%;
       position: absolute;
       top: -3px;
       left: 0;
       transform: translateX(-50%);
       cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
     }
   </style>
 </head>
@@ -385,9 +479,9 @@
     </div>
 
     <div id="volumeControl">
-      <i class="fas fa-volume-low" id="volumeIcon"></i>
+      <i class="fa-solid fa-volume-low" id="lowvolumeIcon"></i>
       <input type="range" id="range" min="0" max="100" value="20">
-      <i class="fas fa-volume-high" id="volumeIcon"></i>
+      <i class="fas fa-volume-high" id="highvolumeIcon"></i>
     </div>
 
     <div id="playModeControls">
@@ -532,20 +626,35 @@
         playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
       });
     });
-    // 初始化滑桿範圍條樣式
+    // 音量和初始化滑桿範圍條樣式
     document.addEventListener('DOMContentLoaded', () => {
       const range = document.getElementById("range");
+      const lowVolumeIcon = document.getElementById("lowvolumeIcon");
+      const highVolumeIcon = document.getElementById("highvolumeIcon");
+      // 初始化音量
       const updateVar = (value) => {
         document.documentElement.style.setProperty("--range", value + "%");
       };
+      const updateVolume = (value) => {
+        range.value = value; // 同步更新滑桿
+        audio.volume = value / 100; // 更新音量
+        updateVar(value); // 更新 CSS 變數
+      };
       // 設定初始值
       updateVar(range.value);
-      // 設定音量初始值
       audio.volume = range.value / 100;
-      // 添加滑桿事件監聽
+      // 滑桿事件監聽
       range.addEventListener("input", () => {
-        updateVar(range.value);
-        audio.volume = range.value / 100; // 更新音量
+        updateVolume(range.value);
+      });
+      // 音量圖示事件監聽
+      lowVolumeIcon.addEventListener("click", () => {
+        let newVolume = Math.max(0, parseInt(range.value) - 10); // 減小音量
+        updateVolume(newVolume);
+      });
+      highVolumeIcon.addEventListener("click", () => {
+        let newVolume = Math.min(100, parseInt(range.value) + 10); // 增大音量
+        updateVolume(newVolume);
       });
     });
     audio.addEventListener('timeupdate', updateTimeDisplay);
@@ -666,7 +775,6 @@
       if (sleepTimer) clearTimeout(sleepTimer);
       sleepTimer = setTimeout(() => {
         audio.pause();
-        playPauseButton.textContent = 'Play';
         console.log('睡眠模式：音樂已停止。');
       }, minutes * 60 * 1000); // 分鐘轉毫秒
     }
