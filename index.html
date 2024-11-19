@@ -27,7 +27,7 @@
     }
 
     h1 {
-      font-size: 24px;
+      font-size: 28px;
       margin-bottom: 16px;
       color: #3461a4;
       text-align: center;
@@ -35,16 +35,22 @@
 
     /* 音樂播放器容器 */
     #audioContainer {
-      background: #1e1e1e;
+      background: linear-gradient(135deg, #1e1e1e, #333333, #1a1a1a);
       border-radius: 16px;
-      box-shadow: var(--button-shadow);
+      box-shadow:
+        inset 0 0 10px rgba(255, 255, 255, 0.1),
+        /* 內部高光 */
+        0 10px 30px rgba(0, 0, 0, 0.8),
+        /* 外部陰影 */
+        0 5px 15px rgba(0, 0, 0, 0.6);
+      /* 額外的外部陰影 */
       padding: 20px;
       width: 100%;
-      max-width: 320px;
+      max-width: 420px;
       text-align: center;
       position: relative;
       overflow: hidden;
-      transition: var(--transition-ease);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     /* 酷炫的光澤效果 */
@@ -76,7 +82,7 @@
 
     #trackName {
       margin-top: 10px;
-      font-size: 16px;
+      font-size: 21px;
       color: #fcfc8b;
       white-space: nowrap;
       overflow: hidden;
@@ -92,8 +98,8 @@
     }
 
     .control-button {
-      width: 45px;
-      height: 45px;
+      width: 60px;
+      height: 60px;
       border: none;
       border-radius: 50%;
       background: linear-gradient(145deg, #f1f8ff, #c1d5f5);
@@ -106,7 +112,7 @@
     }
 
     .control-button i {
-      font-size: 22px;
+      font-size: 28px;
       color: #28527a;
     }
 
@@ -170,7 +176,7 @@
 
     #lowvolumeIcon,
     #highvolumeIcon {
-      margin-top: 6px;
+      margin-top: 8px;
       color: #a8afb3;
       font-size: 20px;
       transition: color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
@@ -251,7 +257,7 @@
 
     #playlist {
       margin-top: 15px;
-      max-height: 120px;
+      max-height: 200px;
       overflow-y: auto;
       background-color: #33495e;
       /* 深藍灰色背景 */
@@ -316,8 +322,8 @@
       transition: var(--transition-ease);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       position: relative;
-      height: 25px;
-      font-size: 14px;
+      height: 40px;
+      font-size: 18px;
       display: flex;
       /* 需要明確啟用 Flexbox */
       align-items: center;
@@ -342,72 +348,8 @@
     #timeDisplay {
       color: #ffdfdf;
       text-shadow: 0 0 10px #ff758c;
-      font-size: 14px;
+      font-size: 18px;
       /* 控制文字大小 */
-    }
-
-    @media (max-width: 600px) {
-      #audioContainer {
-        padding: 15px;
-      }
-
-      h1 {
-        font-size: 20x;
-      }
-
-      button {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-        padding: 10px;
-      }
-
-      #audioContainer {
-        padding: 15px;
-      }
-
-      #volumeControl input {
-        margin-top: 5px;
-      }
-
-      #playerControls .control-button {
-        width: 40px;
-        height: 40px;
-        aspect-ratio: 1 / 1;
-      }
-
-      #playlist li {
-        padding: 10px;
-        overflow: hidden;
-        /* 隱藏超出的部分 */
-        text-overflow: ellipsis;
-        /* 超出部分以省略號表示 */
-      }
-
-      #playlist {
-        max-height: 80px;
-      }
-
-      .control-button i {
-        font-size: 18px;
-
-        /* 中型設備 */
-        #progressContainer {
-          width: 60%;
-          max-width: 100px;
-          /* 設置最大寬度 */
-          /* 小螢幕下占容器寬度的 90% */
-        }
-      }
-    }
-
-    @media (min-width: 601px) {
-      #progressContainer {
-        width: 70%;
-        /* 大螢幕下占容器寬度的 80% */
-        max-width: 300px;
-        /* 設置最大寬度 */
-      }
     }
 
     /* 播放模式容器 */
@@ -420,8 +362,8 @@
 
     /* 播放模式按鈕 */
     .mode-button {
-      width: 32px;
-      height: 32px;
+      width: 50px;
+      height: 50px;
       border: none;
       border-radius: 20%;
       background: linear-gradient(145deg, #50c878, #28a745);
@@ -435,7 +377,7 @@
     }
 
     .mode-button i {
-      font-size: 20px;
+      font-size: 30px;
       color: #fff;
       transition: transform 0.2s ease, color 0.3s ease;
     }
@@ -465,7 +407,7 @@
     /*樂曲進度條*/
     #progressContainer {
       width: 100%;
-      width: 250px;
+      width: 340px;
       height: 8px;
       background: #d1e3eb;
       position: relative;
@@ -493,6 +435,77 @@
       cursor: pointer;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
     }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 24px;
+      }
+
+      button {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+        padding: 10px;
+      }
+
+      #audioContainer {
+        width: 100%;
+        max-width: 320px;
+        padding: 15px;
+      }
+
+      #volumeControl input {
+        margin-top: 5px;
+      }
+
+      #playerControls .control-button {
+        width: 55px;
+        height: 55px;
+        aspect-ratio: 1 / 1;
+      }
+
+      #playlist li {
+        padding: 10px;
+        font-size: 14px;
+        overflow: hidden;
+        /* 隱藏超出的部分 */
+        text-overflow: ellipsis;
+        /* 超出部分以省略號表示 */
+      }
+
+      #playlist {
+        max-height: 170px;
+      }
+
+      .control-button i {
+        font-size: 20px;
+      }
+
+      .mode-button {
+        width: 40px;
+        height: 40px;
+      }
+
+      .mode-button i {
+        font-size: 20px;
+      }
+
+      /* 中型設備 */
+      #progressContainer {
+        width: 80%;
+        /* 大螢幕下占容器寬度的 80% */
+        max-width: 250px;
+      }
+
+      #timeDisplay {
+        font-size: 14px;
+        /* 控制文字大小 */
+      }
+
+      #trackName {
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 
@@ -501,7 +514,7 @@
   <div id="audioContainer">
     <audio id="myAudio"></audio>
     <p id="trackName"></p>
-
+    <br>
     <div id="playerControls">
       <button id="prevButton" class="control-button" title="上一首">
         <i class="fas fa-backward"></i>
