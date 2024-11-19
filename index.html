@@ -16,42 +16,35 @@
 
     body {
       font-family: 'Arial', sans-serif;
-      /*background: linear-gradient(135deg, #f0f4f8, #d9eaf7);*/
-      background: url('https://i.imgur.com/JdqsBVj.jpeg') no-repeat center center fixed;
+      background: url('https://i.imgur.com/JdqsBVj.jpeg') no-repeat center center / cover;
       color: #222;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 30px;
+      padding: 20px;
     }
 
     h1 {
-      font-size: 36px;
-      margin-bottom: 20px;
+      font-size: 24px;
+      margin-bottom: 16px;
       color: #3461a4;
-      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
     }
 
     /* 音樂播放器容器 */
     #audioContainer {
-      background: linear-gradient(135deg, #1e1e1e, #333333, #1a1a1a);
-      border-radius: 24px;
-      box-shadow:
-        inset 0 0 10px rgba(255, 255, 255, 0.1),
-        /* 內部高光 */
-        0 10px 30px rgba(0, 0, 0, 0.8),
-        /* 外部陰影 */
-        0 5px 15px rgba(0, 0, 0, 0.6);
-      /* 額外的外部陰影 */
-      padding: 30px;
+      background: #1e1e1e;
+      border-radius: 16px;
+      box-shadow: var(--button-shadow);
+      padding: 20px;
       width: 100%;
-      max-width: 400px;
+      max-width: 320px;
       text-align: center;
       position: relative;
       overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: var(--transition-ease);
     }
 
     /* 酷炫的光澤效果 */
@@ -69,7 +62,7 @@
     }
 
     #audioContainer:hover {
-      transform: translateY(-10px);
+      transform: translateY(-5px);
       box-shadow:
         inset 0 0 15px rgba(255, 255, 255, 0.2),
         0 15px 40px rgba(0, 0, 0, 0.9),
@@ -78,14 +71,13 @@
 
     #myAudio {
       width: 100%;
-      border-radius: 12px;
+      border-radius: 8px;
     }
 
     #trackName {
-      margin-top: 15px;
-      font-size: 18px;
+      margin-top: 10px;
+      font-size: 16px;
       color: #fcfc8b;
-      text-shadow: 0 0 10px #ff758c;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -93,14 +85,15 @@
 
     #playerControls {
       display: flex;
-      gap: 20px;
+      gap: 15px;
       justify-content: center;
       align-items: center;
+      margin-top: 10px;
     }
 
     .control-button {
-      width: 60px;
-      height: 60px;
+      width: 45px;
+      height: 45px;
       border: none;
       border-radius: 50%;
       background: linear-gradient(145deg, #f1f8ff, #c1d5f5);
@@ -109,11 +102,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: all 0.3s ease;
+      transition: var(--transition-ease);
     }
 
     .control-button i {
-      font-size: 24px;
+      font-size: 22px;
       color: #28527a;
     }
 
@@ -121,6 +114,7 @@
     .control-button:hover {
       background: linear-gradient(145deg, #d0e4fa, #a7c7ee);
       transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
     }
 
     .control-button:hover i {
@@ -139,8 +133,8 @@
 
     button i {
       pointer-events: none;
-      transition: transform 0.3s ease;
-      font-size: 24px;
+      /*transition: transform 0.3s ease;*/
+      font-size: 20px;
     }
 
     select {
@@ -161,7 +155,7 @@
       gap: 12px;
       width: 85%;
       /* 使用100%寬度，或更改為auto以根據內容自動調整 */
-      max-width: 400px;
+      max-width: 300px;
       /* 最大寬度，以避免在大螢幕上過寬 */
       margin-top: 10px;
       margin-left: auto;
@@ -178,7 +172,7 @@
     #highvolumeIcon {
       margin-top: 6px;
       color: #a8afb3;
-      font-size: 25px;
+      font-size: 20px;
       transition: color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     }
 
@@ -203,6 +197,11 @@
 
     :root {
       --range: 0%;
+      --primary-bg: linear-gradient(135deg, #6a11cb, #2575fc);
+      --highlight-bg: linear-gradient(135deg, #ffd700, #ff8c00);
+      --hover-bg: linear-gradient(135deg, #d92400, #fce651);
+      --button-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+      --transition-ease: all 0.3s ease;
     }
 
     #range {
@@ -251,18 +250,12 @@
     }
 
     #playlist {
-      margin-top: 20px;
-      max-height: 150px;
-      overflow-y: auto;
-    }
-
-    #playlist {
-      margin-top: 20px;
-      max-height: 150px;
+      margin-top: 15px;
+      max-height: 120px;
       overflow-y: auto;
       background-color: #33495e;
       /* 深藍灰色背景 */
-      border-radius: 20px;
+      border-radius: 12px;
       /* 圓角 */
       padding: 10px;
       color: #ecf0f1;
@@ -314,20 +307,29 @@
     }
 
     #playlist li {
-      padding: 12px;
+      padding: 12x;
       background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
       border-radius: 12px;
       margin-bottom: 10px;
       color: #fff;
       cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+      transition: var(--transition-ease);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       position: relative;
+      height: 25px;
+      font-size: 14px;
+      display: flex;
+      /* 需要明確啟用 Flexbox */
+      align-items: center;
+      /* 垂直居中 */
+      justify-content: center;
+      /* 水平靠左 */
+      /* 控制文字大小 */
     }
 
     #playlist li:hover {
       background: linear-gradient(135deg, #d92400, #fce651);
-      transform: scale(1.05);
+      transform: scale(1.03);
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     }
 
@@ -340,15 +342,17 @@
     #timeDisplay {
       color: #ffdfdf;
       text-shadow: 0 0 10px #ff758c;
+      font-size: 14px;
+      /* 控制文字大小 */
     }
 
     @media (max-width: 600px) {
       #audioContainer {
-        padding: 20px;
+        padding: 15px;
       }
 
       h1 {
-        font-size: 24px;
+        font-size: 20x;
       }
 
       button {
@@ -358,12 +362,51 @@
         padding: 10px;
       }
 
+      #audioContainer {
+        padding: 15px;
+      }
+
       #volumeControl input {
         margin-top: 5px;
       }
 
+      #playerControls .control-button {
+        width: 40px;
+        height: 40px;
+        aspect-ratio: 1 / 1;
+      }
+
       #playlist li {
-        padding: 8px;
+        padding: 10px;
+        overflow: hidden;
+        /* 隱藏超出的部分 */
+        text-overflow: ellipsis;
+        /* 超出部分以省略號表示 */
+      }
+
+      #playlist {
+        max-height: 80px;
+      }
+
+      .control-button i {
+        font-size: 18px;
+
+        /* 中型設備 */
+        #progressContainer {
+          width: 60%;
+          max-width: 100px;
+          /* 設置最大寬度 */
+          /* 小螢幕下占容器寬度的 90% */
+        }
+      }
+    }
+
+    @media (min-width: 601px) {
+      #progressContainer {
+        width: 70%;
+        /* 大螢幕下占容器寬度的 80% */
+        max-width: 300px;
+        /* 設置最大寬度 */
       }
     }
 
@@ -377,10 +420,10 @@
 
     /* 播放模式按鈕 */
     .mode-button {
-      width: 60px;
-      height: 60px;
+      width: 32px;
+      height: 32px;
       border: none;
-      border-radius: 50%;
+      border-radius: 20%;
       background: linear-gradient(145deg, #50c878, #28a745);
       /* 綠色漸變 */
       box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2), 0 -4px 5px rgba(255, 255, 255, 0.1) inset;
@@ -388,11 +431,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: all 0.3s ease;
+      transition: var(--transition-ease);
     }
 
     .mode-button i {
-      font-size: 24px;
+      font-size: 20px;
       color: #fff;
       transition: transform 0.2s ease, color 0.3s ease;
     }
@@ -422,11 +465,12 @@
     /*樂曲進度條*/
     #progressContainer {
       width: 100%;
+      width: 250px;
       height: 8px;
       background: #d1e3eb;
       position: relative;
       cursor: pointer;
-      margin: 20px 0;
+      margin: 20px auto;
       border-radius: 5px;
     }
 
@@ -457,7 +501,7 @@
   <div id="audioContainer">
     <audio id="myAudio"></audio>
     <p id="trackName"></p>
-    <br>
+
     <div id="playerControls">
       <button id="prevButton" class="control-button" title="上一首">
         <i class="fas fa-backward"></i>
