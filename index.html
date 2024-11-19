@@ -89,6 +89,40 @@
       text-overflow: ellipsis;
     }
 
+    .marquee p {
+      animation: scroll 8s linear infinite;
+      /* 滾動動畫 */
+      min-width: 100%;
+      /* 確保文字寬度足夠觸發滾動 */
+      animation-delay: 1s;
+      /* 起始的延遲 */
+    }
+
+    /* 文字滾動動畫 */
+    @keyframes scroll {
+      0% {
+        transform: translateX(100%);
+      }
+
+      10% {
+        transform: translateX(100%);
+      }
+
+      90% {
+        transform: translateX(-120%);
+      }
+
+      100% {
+        transform: translateX(-120%);
+      }
+    }
+
+    .no-animation p {
+      animation: none;
+      /* 禁用動畫 */
+      transform: translateX(0);
+    }
+
     #playerControls {
       display: flex;
       gap: 15px;
@@ -323,7 +357,7 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       position: relative;
       height: 40px;
-      font-size: 18px;
+      font-size: 16px;
       display: flex;
       /* 需要明確啟用 Flexbox */
       align-items: center;
@@ -331,6 +365,9 @@
       justify-content: center;
       /* 水平靠左 */
       /* 控制文字大小 */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     #playlist li:hover {
@@ -513,7 +550,9 @@
   <h1>Fancy Music Player</h1>
   <div id="audioContainer">
     <audio id="myAudio"></audio>
-    <p id="trackName"></p>
+    <div class="marquee no-animation">
+      <p id="trackName"></p>
+    </div>
     <br>
     <div id="playerControls">
       <button id="prevButton" class="control-button" title="上一首">
@@ -646,15 +685,29 @@
       } while (randomIndex === currentTrack);
       return randomIndex;
     }
+    const marquee = document.querySelector('.marquee');
+
+    function toggleAnimation(isPlaying) {
+      if (isPlaying) {
+        marquee.classList.remove('no-animation'); // 啟動動畫
+      } else {
+        marquee.classList.add('no-animation'); // 暫停動畫
+      }
+    }
     playPauseButton.addEventListener('click', function() {
       if (audio.paused) {
         audio.play();
         playPauseButton.querySelector('i').className = 'fas fa-pause';
+        toggleAnimation(true); // 播放時啟動動畫
       } else {
         audio.pause();
         playPauseButton.querySelector('i').className = 'fas fa-play';
+        toggleAnimation(false); // 暫停時禁用動畫
       }
     });
+    audio.addEventListener('play', () => toggleAnimation(true));
+    audio.addEventListener('pause', () => toggleAnimation(false));
+    
     nextButton.addEventListener('click', function() {
       if (playMode === 'random') {
         currentTrack = getRandomTrack();
@@ -664,9 +717,11 @@
       audio.src = playlist[currentTrack];
       updateTrackInfo();
       audio.play().then(() => {
-        playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
+        playPauseButton.querySelector('i').className = 'fas fa-pause';
+        toggleAnimation(true); // 確保播放時啟動動畫
       }).catch(() => {
-        playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
+        playPauseButton.querySelector('i').className = 'fas fa-play';
+        toggleAnimation(false); // 播放失敗時禁用動畫
       });
     });
     prevButton.addEventListener('click', function() {
@@ -678,9 +733,11 @@
       audio.src = playlist[currentTrack];
       updateTrackInfo();
       audio.play().then(() => {
-        playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
+        playPauseButton.querySelector('i').className = 'fas fa-pause';
+        toggleAnimation(true);
       }).catch(() => {
-        playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
+        playPauseButton.querySelector('i').className = 'fas fa-play';
+        toggleAnimation(false);
       });
     });
     // 音量和初始化滑桿範圍條樣式
