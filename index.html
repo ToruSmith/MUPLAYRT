@@ -89,6 +89,25 @@
       text-overflow: ellipsis;
     }
 
+    .big-container {
+      /* 文字看板-限制曲目範圍 */
+      display: flex;
+      /* 啟用 Flexbox */
+      width: 100%;
+      justify-content: center;
+      /* 水平置中 */
+      align-items: center;
+      /* 垂直置中 */
+      overflow: hidden;
+      /* 隱藏超出的內容 */
+      margin-left: 0px;
+    }
+
+    .marquee {
+      width: 90%;
+      display: flex;
+    }
+
     .marquee p {
       animation: scroll 8s linear infinite;
       /* 滾動動畫 */
@@ -363,6 +382,7 @@
       align-items: center;
       /* 垂直居中 */
       justify-content: center;
+      padding-left: 5px;
       /* 水平靠左 */
       /* 控制文字大小 */
       white-space: nowrap;
@@ -549,9 +569,11 @@
 <body>
   <h1>Fancy Music Player</h1>
   <div id="audioContainer">
-    <audio id="myAudio"></audio>
-    <div class="marquee no-animation">
-      <p id="trackName"></p>
+    <div class="big-container">
+      <audio id="myAudio"></audio>
+      <div class="marquee no-animation">
+        <p id="trackName"></p>
+      </div>
     </div>
     <br>
     <div id="playerControls">
@@ -621,6 +643,25 @@
 
     function updateTrackInfo() {
       trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+      updatePlaylistStyles();
+    }
+    // 高亮播放中的歌曲
+    function updatePlaylistStyles() {
+      const allListItems = playlistContainer.querySelectorAll('li');
+      allListItems.forEach((item, index) => {
+        if (index === currentTrack && !audio.paused) {
+          item.classList.add('playing'); // 當前曲目播放時亮起
+          // 自訂滾動行為
+          const scrollOptions = {
+            behavior: 'smooth', // 平滑滾動
+            block: 'nearest', // 滾動到最近的可視區域
+            inline: 'center' // 水平居中 (若有橫向滾動需求)
+          };
+          item.scrollIntoView(scrollOptions);
+        } else {
+          item.classList.remove('playing'); // 其他曲目移除樣式
+        }
+      });
     }
 
     function updateTimeDisplay() {
@@ -648,8 +689,10 @@
         updateTrackInfo();
         audio.play().then(() => {
           playPauseButton.querySelector('i').className = 'fas fa-pause'; // 正確顯示「暫停」圖示
+          updatePlaylistStyles();
         }).catch(() => {
           playPauseButton.querySelector('i').className = 'fas fa-play'; // 如果播放失敗，顯示「播放」圖示
+          updatePlaylistStyles();
         });
       });
       playlistContainer.appendChild(listItem);
@@ -704,10 +747,16 @@
         playPauseButton.querySelector('i').className = 'fas fa-play';
         toggleAnimation(false); // 暫停時禁用動畫
       }
+      updatePlaylistStyles();
     });
-    audio.addEventListener('play', () => toggleAnimation(true));
-    audio.addEventListener('pause', () => toggleAnimation(false));
-    
+    audio.addEventListener('play', () => {
+      toggleAnimation(true);
+      updatePlaylistStyles(); // 播放事件發生時更新樣式
+    });
+    audio.addEventListener('pause', () => {
+      toggleAnimation(false);
+      updatePlaylistStyles(); // 暫停事件發生時更新樣式
+    });
     nextButton.addEventListener('click', function() {
       if (playMode === 'random') {
         currentTrack = getRandomTrack();
