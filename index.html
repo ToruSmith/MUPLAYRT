@@ -493,6 +493,50 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
     }
 
+    #uploadContainer {
+      display: flex;
+      justify-content: space-around;
+      /* 按钮之间保持适当间距 */
+      gap: 5px;
+      /* 按钮之间的间距 */
+      flex-wrap: wrap;
+      /* 如果屏幕太小，按钮可以换行 */
+      box-sizing: border-box;
+      /* 包含内边距和边框 */
+    }
+
+    #uploadContainer button {
+      flex: 1;
+      /* 让按钮在容器中均匀分布 */
+      min-width: 40px;
+      /* 设置按钮的最小宽度 */
+      max-width: 100px;
+      /* 防止按钮过宽 */
+      padding: 10px 15px;
+      /* 按钮内边距 */
+      font-size: 15px;
+      /* 按钮文字大小 */
+      text-align: center;
+      /* 文字居中 */
+      white-space: nowrap;
+      /* 防止文字换行 */
+      overflow: hidden;
+      /* 超出部分隐藏 */
+      text-overflow: ellipsis;
+      /* 显示省略号 */
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f0f0f0;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #uploadContainer button:hover {
+      background: linear-gradient(145deg, #d0e4fa, #a7c7ee);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+    }
+
     @media (max-width: 600px) {
       h1 {
         font-size: 24px;
@@ -562,6 +606,17 @@
       #trackName {
         font-size: 16px;
       }
+
+      #uploadContainer button {
+        height: 30px;
+        max-width: 80px;
+        /* 防止按钮过宽 */
+        padding: 5px 10px;
+        /* 按钮内边距 */
+        font-size: 14px;
+        /* 按钮文字大小 */
+        white-space: pre-line;
+      }
     }
   </style>
 </head>
@@ -613,6 +668,12 @@
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
+    <br>
+    <div id="uploadContainer">
+      <button id="uploadButton">新增歌曲</button>
+      <button id="clearPlaylistButton">清除清單</button>
+      <input type="file" id="fileInput" accept="audio/*" multiple style="display: none;">
+    </div>
 
     <div id="playlist">
       <ul></ul>
@@ -636,13 +697,91 @@
     var playlistContainer = document.getElementById('playlist').querySelector('ul');
     var currentTimeDisplay = document.getElementById('currentTime');
     var durationDisplay = document.getElementById('duration');
+    const uploadButton = document.getElementById('uploadButton');
+    const fileInput = document.getElementById('fileInput');
+    var playlistInfo = {}; // 用於記錄 Blob URL 和檔名對應
+    uploadButton.addEventListener('click', function() {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'audio/*';
+      fileInput.addEventListener('change', function(event) {
+        const files = event.target.files;
+        for (let i = 0; i < files.length; i++) {
+          const absolutePath = URL.createObjectURL(files[i]);
+          playlist.push(absolutePath);
+          playlistInfo[absolutePath] = files[i].name; // 存檔名
+          const listItem = document.createElement('li');
+          listItem.textContent = files[i].name; // 顯示檔名
+          listItem.addEventListener('click', function() {
+            currentTrack = playlist.indexOf(absolutePath);
+            audio.src = playlist[currentTrack];
+            updateTrackInfo();
+            audio.play();
+            playPauseButton.querySelector('i').className = 'fas fa-pause';
+          });
+          playlistContainer.appendChild(listItem);
+        }
+        if (playlist.length === files.length) {
+          currentTrack = 0;
+          audio.src = playlist[currentTrack];
+          updateTrackInfo();
+        }
+      });
+      fileInput.click();
+    });
+    // 更新播放清單顯示
+    function updatePlaylistDisplay() {
+      playlistContainer.innerHTML = '';
+      playlist.forEach((track, index) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = getFileName(track);
+        listItem.addEventListener('click', () => {
+          currentTrack = index;
+          audio.src = playlist[currentTrack];
+          updateTrackInfo();
+          audio.play();
+        });
+        playlistContainer.appendChild(listItem);
+      });
+    }
+    const clearPlaylistButton = document.getElementById('clearPlaylistButton');
+    clearPlaylistButton.addEventListener('click', () => {
+      playlist.length = 0;
+      playlistContainer.innerHTML = '';
+      audio.pause();
+      audio.src = '';
+      trackNameDisplay.textContent = '清單已清空';
+      playPauseButton.querySelector('i').className = 'fas fa-play';
+      durationDisplay.textContent = '00:00'; // 重設時長顯示
+      currentTimeDisplay.textContent = '00:00'; // 重設當前時間顯示
+      progressBar.style.width = '0%'; // 重設進度條
+      progressThumb.style.left = '0%'; // 重設拖曳點位置
+      console.log('播放清單已清除');
+    });
 
     function getFileName(filePath) {
-      return filePath.split('/').pop();
+      try {
+        // 處理 Blob URL 或本地檔案名稱
+        if (filePath.startsWith('blob:')) {
+          // 新增的歌曲：從 Blob URL 中提取檔名（`fileInput` 的檔案名已存）
+          return playlistInfo[filePath] || '未知檔名';
+        } else {
+          // 預設清單：正常提取檔名
+          return filePath.split('/').pop();
+        }
+      } catch (error) {
+        console.error('無法解析檔案名稱:', error);
+        return '未知檔名';
+      }
     }
 
     function updateTrackInfo() {
-      trackNameDisplay.textContent = getFileName(playlist[currentTrack]);
+      if (playlist.length > 0) {
+        const currentPath = playlist[currentTrack];
+        trackNameDisplay.textContent = getFileName(currentPath);
+      } else {
+        trackNameDisplay.textContent = '播放清單為空';
+      }
       updatePlaylistStyles();
     }
     // 高亮播放中的歌曲
@@ -738,6 +877,15 @@
       }
     }
     playPauseButton.addEventListener('click', function() {
+      if (playlist.length === 0) {
+        alert('播放清單為空，請新增音樂！');
+        return;
+      }
+      if (!audio.src || audio.src === '') {
+        currentTrack = 0;
+        audio.src = playlist[currentTrack];
+        updateTrackInfo();
+      }
       if (audio.paused) {
         audio.play();
         playPauseButton.querySelector('i').className = 'fas fa-pause';
@@ -758,10 +906,25 @@
       updatePlaylistStyles(); // 暫停事件發生時更新樣式
     });
     nextButton.addEventListener('click', function() {
+      if (playlist.length === 0) {
+        console.warn("播放清單為空，無法切換到下一首歌曲。");
+        return;
+      }
       if (playMode === 'random') {
-        currentTrack = getRandomTrack();
+        if (playlist.length === 1) {
+          console.log("只有一首歌，隨機播放也是當前曲目。");
+          currentTrack = 0;
+        } else {
+          currentTrack = getRandomTrack();
+        }
       } else if (playMode === 'sequential') {
-        currentTrack = (currentTrack + 1) % playlist.length;
+        // 如果只有一首歌曲，直接重播
+        if (playlist.length === 1) {
+          console.log("只有一首歌，順序播放也是當前曲目。");
+          currentTrack = 0;
+        } else {
+          currentTrack = (currentTrack + 1) % playlist.length;
+        }
       }
       audio.src = playlist[currentTrack];
       updateTrackInfo();
@@ -774,10 +937,25 @@
       });
     });
     prevButton.addEventListener('click', function() {
+      if (playlist.length === 0) {
+        console.warn("播放清單為空，無法切換到上一首歌曲。");
+        return;
+      }
       if (playMode === 'random') {
-        currentTrack = getRandomTrack();
+        if (playlist.length === 1) {
+          console.log("只有一首歌，隨機播放也是當前曲目。");
+          currentTrack = 0;
+        } else {
+          currentTrack = getRandomTrack();
+        }
       } else if (playMode === 'sequential') {
-        currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+        // 如果只有一首歌曲，直接重播
+        if (playlist.length === 1) {
+          console.log("只有一首歌，順序播放也是當前曲目。");
+          currentTrack = 0;
+        } else {
+          currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+        }
       }
       audio.src = playlist[currentTrack];
       updateTrackInfo();
@@ -944,6 +1122,7 @@
     // 啟用40分鐘睡眠模式
     activateSleepMode(40);
   </script>
+
 </body>
 
 </html>
